@@ -1,6 +1,6 @@
 # Sources
 * Dataset
-    * [https://www.cs.toronto.edu/~kriz/cifar.html](https://www.cs.toronto.edu/~kriz/cifar.html)
+    * nEXO charge simulation [DOI 10.1088/1748-0221/14/09/P09020](DOI 10.1088/1748-0221/14/09/P09020)
 * Model Topology
     * [https://arxiv.org/pdf/1512.03385.pdf](https://arxiv.org/pdf/1512.03385.pdf)
     * [https://keras.io/api/applications/resnet/](https://keras.io/api/applications/resnet/)
@@ -31,15 +31,15 @@ datagen = ImageDataGenerator(
     
 # Performance (floating point model)
 * Accuracy
-    * 86.2%
+    * 
 * AUC
-    * .989
+    *
 
 # Performance (quantized tflite model)
 * Accuracy
-    * 86.1%
+    * 
 * AUC
-    * .988
+    *
 
 # Install 
 * Install minicconda from here: https://docs.conda.io/en/latest/miniconda.html
@@ -54,22 +54,13 @@ conda-env create -f environment.yml
 conda activate tiny-mlperf-env
 ```
 
-* Train baseline:
-```
-python train.py -c baseline.yml
-```
 
 * Train tiny:
 ```
-python train.py -c tiny.yml
-```
-
-* Convert baseline (WARNING: not yet tested):
-```
-python convert.py -c baseline.yml
+python train_nexo.py -c tiny2_pynq-z2_nexo.yml 
 ```
 
 * Convert tiny:
 ```
-python convert.py -c tiny.yml
+python convert.py -c tiny2_pynq-z2_nexo.yml 
 ```
