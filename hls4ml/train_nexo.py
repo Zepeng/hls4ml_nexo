@@ -1,6 +1,6 @@
 import os
-if os.system('nvidia-smi') == 0:
-    import setGPU
+#if os.system('nvidia-smi') == 0:
+#    import setGPU
 import tensorflow as tf
 import glob
 import sys
@@ -8,11 +8,12 @@ import argparse
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import roc_auc_score
 import resnet_v1_eembc
+from data_loader import ArrayDataset
 import yaml
 import csv
 # from keras_flops import get_flops # (different flop calculation)
 import kerop
-from tensorflow.keras.datasets import cifar10
+from tensorflow.data import Dataset
 from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
 random_crop_model = tf.keras.models.Sequential()
 random_crop_model.add(RandomCrop(32, 32, input_shape=(32, 32, 3,)))
@@ -77,48 +78,18 @@ def main(args):
     lr_decay = config['fit']['compile']['lr_decay']
 
     # load dataset
-    if data_name == 'cifar10':
-        (X_train, y_train), (X_test, y_test) = cifar10.load_data()
-        X_train, X_test = X_train/256., X_test/256.
+    csv_train = '/scratch/zel032/DatasetFromMin/nexo_train.csv' 
+    csv_test = '/scratch/zel032/DatasetFromMin/nexo_valid.csv' 
+    h5file = '/scratch/zel032/DatasetFromMin/nexo.h5'
+    train_dg = ArrayDataset('train',h5file,csv_train)
+    test_dg = ArrayDataset('test',h5file,csv_test)
 
-        y_train = tf.keras.utils.to_categorical(y_train, num_classes)
-        y_test = tf.keras.utils.to_categorical(y_test, num_classes)
-
-    elif data_name == 'particlezoo':
-        import particlezoo
-        (X_train, y_train), (X_test, y_test) = particlezoo.load_data()
-        X_train, X_test = X_train/256., X_test/256.
-
-    if loss == 'squared_hinge':
-        y_train = y_train * 2 - 1  # -1 or 1 for hinge loss
-        y_test = y_test * 2 - 1
-
-    # define data generator
-    if data_name == 'cifar10':
-        datagen = ImageDataGenerator(
-            rotation_range=15,
-            width_shift_range=0.1,
-            height_shift_range=0.1,
-            horizontal_flip=True,
-            # preprocessing_function=random_crop,
-            # brightness_range=(0.9, 1.2),
-            # contrast_range=(0.9, 1.2)
-        )
-    elif data_name == 'particlezoo':
-        datagen = ImageDataGenerator(
-            rotation_range=15,
-            width_shift_range=0.1,
-            height_shift_range=0.1,
-            horizontal_flip=True,
-            # vertical_flip=True,
-            # zca_whitening=True,
-            # brightness_range=(0.9, 1.2),
-            # contrast_range=(0.9, 1.2)
-        )
-
-    # run preprocessing on training dataset
-    datagen.fit(X_train)
-
+    train_ds = Dataset.from_generator(train_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    train_ds = train_ds.batch(batch_size)
+    test_ds = test_ds.batch(batch_size)
+    #model = ResNet18(2)
+    #model.build(input_shape = (None,200,255,3))
     kwargs = {'input_shape': input_shape,
               'num_classes': num_classes,
               'num_filters': num_filters,
@@ -143,7 +114,6 @@ def main(args):
 
     # define model
     model = getattr(resnet_v1_eembc, model_name)(**kwargs)
-
     # print model summary
     print('#################')
     print('# MODEL SUMMARY #')
@@ -172,7 +142,7 @@ def main(args):
     # Alternative FLOPs calculation (see https://github.com/tokusumi/keras-flops), ~same answer
     # total_flop = get_flops(model, batch_size=1)
     # print("FLOPS: {} GLOPs".format(total_flop/1e9))
-
+    
     # compile model with optimizer
     model.compile(optimizer=optimizer(learning_rate=initial_lr),
                   loss=loss,
@@ -189,13 +159,16 @@ def main(args):
                  ]
 
     # train
-    history = model.fit(datagen.flow(X_train, y_train, batch_size=batch_size),
-                        steps_per_epoch=X_train.shape[0] // batch_size,
+    history = model.fit(train_ds, 
+            #datagen.flow(X_train, y_train, batch_size=batch_size),
+                        #steps_per_epoch=X_train.shape[0] // batch_size,
                         epochs=num_epochs,
-                        validation_data=(X_test, y_test),
+                        validation_data=test_ds, 
+                        #(X_test, y_test),
                         callbacks=callbacks,
                         verbose=verbose)
 
+    """
     # restore "best" model
     model.load_weights(model_file_path)
 
@@ -209,7 +182,7 @@ def main(args):
 
     print('Model test accuracy = %.3f' % evaluation[1])
     print('Model test weighted average AUC = %.3f' % auc)
-
+    """
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

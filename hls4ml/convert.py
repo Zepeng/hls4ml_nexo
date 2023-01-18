@@ -1,7 +1,7 @@
 import os
 import json
-if os.system('nvidia-smi') == 0:
-    import setGPU
+#if os.system('nvidia-smi') == 0:
+#    import setGPU
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from sklearn.metrics import accuracy_score

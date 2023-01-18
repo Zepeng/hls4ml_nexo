@@ -173,7 +173,8 @@ def resnet_v1_eembc(input_shape=[32, 32, 3], num_classes=10, l1p=0, l2p=1e-4,
     y = Flatten()(x)
     y = Dense(num_classes,
               kernel_initializer='he_normal')(y)
-    outputs = Activation('softmax', name='softmax')(y)
+    #outputs = Activation('sigmoid', name='sigmoid')(y)
+    outputs = Dense(1, activation='sigmoid')(y)
 
     # Instantiate model.
     model = Model(inputs=inputs, outputs=outputs)
@@ -367,13 +368,15 @@ def resnet_v1_eembc_quantized(input_shape=[32, 32, 3], num_classes=10, l1p=0, l2
         x = QAveragePooling2D(pool_size=pool_size, quantizer=logit_quantizer)(x)
 
     y = Flatten()(x)
-    # Changed output to separate QDense but did not quantize softmax as specified
+    # Changed output to separate QDense but did not quantize sigmoid as specified
     outputs = QDense(num_classes,
                      kernel_quantizer=logit_quantizer,
                      bias_quantizer=logit_quantizer,
                      kernel_initializer='he_normal')(y)
     if final_activation:
-        outputs = Activation('softmax', name='softmax')(outputs)
+        #outputs = Activation('sigmoid', name='sigmoid')(outputs)
+        outputs = Dense(1, activation='sigmoid')(outputs) 
+
 
     # Instantiate model.
     model = Model(inputs=inputs, outputs=outputs)

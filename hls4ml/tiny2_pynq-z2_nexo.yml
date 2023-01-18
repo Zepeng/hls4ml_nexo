@@ -1,11 +1,11 @@
-save_dir: resnet_v1_eembc_quantized_particlezoo_quantized_tiny2
+save_dir: resnet_v1_eembc_quantized_nexo_quantized_tiny2
 data:
-  name: particlezoo
+  name: nexo
   input_shape:
-  - 32
-  - 32
+  - 200
+  - 255
   - 3
-  num_classes: 36
+  num_classes: 2 
 model:
   name: resnet_v1_eembc_quantized
   filters:
@@ -37,8 +37,8 @@ fit:
     initial_lr: 0.001
     lr_decay: 0.99
     optimizer: Adam
-    loss: categorical_crossentropy
-  epochs: 1000
+    loss: binary_crossentropy
+  epochs: 10
   patience: 1000
   batch_size: 36
   verbose: 1
@@ -68,10 +68,10 @@ convert:
   Precision: ap_fixed<12,7>
   ReuseFactor: 16384
   Trace: 0
-  Build: 1
+  Build: 0
   EEMBC_power: 0
   FIFO_opt: 0
-  FIFO_opt_json: max_depth_rf16384.json
+  FIFO_opt_json: None #max_depth_rf16384.json
   MergedRelu: 1
   ClockPeriod: 6.67
   Strategy: Resource
