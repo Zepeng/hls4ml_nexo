@@ -163,7 +163,6 @@ def main(args):
                         #steps_per_epoch=X_train.shape[0] // batch_size,
                         epochs=num_epochs,
                         validation_data=test_ds, 
-                        #(X_test, y_test),
                         callbacks=callbacks,
                         verbose=verbose)
 

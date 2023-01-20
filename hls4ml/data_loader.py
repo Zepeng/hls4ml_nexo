@@ -71,6 +71,7 @@ def test():
     dg = nEXODataset('train',h5file,csv_file)
 
     ds = Dataset.from_generator(dg, output_types = (tf.float32, tf.int64), output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    ds = ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16).batch(64)
 
     iterator = iter(ds)
     x, y = next(iterator)

@@ -40,8 +40,8 @@ fit:
     loss: binary_crossentropy
   epochs: 10
   patience: 1000
-  batch_size: 36
-  verbose: 1
+  batch_size: 50
+  verbose: 2
 
 quantization:
   logit_total_bits: 8
