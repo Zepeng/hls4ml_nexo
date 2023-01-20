@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import h5py
 
-class ArrayDataset:
+class nEXODataset:
     def __init__(self, phase, h5_path, csv_path, transformations = None):
         #super().__init__()
         csv_info = pd.read_csv(csv_path, skiprows=1, header=None)
@@ -63,12 +63,12 @@ class ArrayDataset:
 
 import numpy as np
 import os, requests, copy, random
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 from tensorflow.data import Dataset
 def test():
     csv_file = '/scratch/zel032/DatasetFromMin/nexo.csv' 
     h5file = '/scratch/zel032/DatasetFromMin/nexo.h5'
-    dg = ArrayDataset('train',h5file,csv_file)
+    dg = nEXODataset('train',h5file,csv_file)
 
     ds = Dataset.from_generator(dg, output_types = (tf.float32, tf.int64), output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
 
@@ -77,11 +77,11 @@ def test():
     for b in ds:
         imgs, labs = b
         print(imgs.shape, labs.shape)
-        fig, axs = plt.subplots(8,4)
-        for i in range(8):
-            for j in range(4):
-                axs[i,j].imshow(imgs[i*4+j],cmap = 'gray')
-        plt.show()
+        #fig, axs = plt.subplots(8,4)
+        #for i in range(8):
+        #    for j in range(4):
+        #        axs[i,j].imshow(imgs[i*4+j],cmap = 'gray')
+        #plt.show()
         break
 if __name__ == '__main__':
     test()

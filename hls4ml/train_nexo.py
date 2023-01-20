@@ -8,7 +8,7 @@ import argparse
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import roc_auc_score
 import resnet_v1_eembc
-from data_loader import ArrayDataset
+from data_loader import nEXODataset
 import yaml
 import csv
 # from keras_flops import get_flops # (different flop calculation)
@@ -78,11 +78,11 @@ def main(args):
     lr_decay = config['fit']['compile']['lr_decay']
 
     # load dataset
-    csv_train = '/scratch/zel032/DatasetFromMin/nexo_train.csv' 
-    csv_test = '/scratch/zel032/DatasetFromMin/nexo_valid.csv' 
-    h5file = '/scratch/zel032/DatasetFromMin/nexo.h5'
-    train_dg = ArrayDataset('train',h5file,csv_train)
-    test_dg = ArrayDataset('test',h5file,csv_test)
+    csv_train = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv' 
+    csv_test = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_valid.csv' 
+    h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
+    train_dg = nEXODataset('train',h5file,csv_train)
+    test_dg = nEXODataset('test',h5file,csv_test)
 
     train_ds = Dataset.from_generator(train_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
     test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
