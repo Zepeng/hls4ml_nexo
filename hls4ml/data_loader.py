@@ -66,14 +66,16 @@ import os, requests, copy, random
 #import matplotlib.pyplot as plt
 from tensorflow.data import Dataset
 def test():
-    csv_file = '/scratch/zel032/DatasetFromMin/nexo.csv' 
-    h5file = '/scratch/zel032/DatasetFromMin/nexo.h5'
+    csv_file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv' 
+    h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
     dg = nEXODataset('train',h5file,csv_file)
 
     ds = Dataset.from_generator(dg, output_types = (tf.float32, tf.int64), output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
 
+    iterator = iter(ds)
+    x, y = next(iterator)
+    print(x.shape)
     ds = ds.batch(32)
-
     for b in ds:
         imgs, labs = b
         print(imgs.shape, labs.shape)

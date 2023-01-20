@@ -6,8 +6,8 @@ import tensorflow as tf
 from tensorflow.keras.models import Model
 from sklearn.metrics import accuracy_score
 import argparse
-from tensorflow.keras.datasets import cifar10
-from train import yaml_load
+from train_nexo import yaml_load
+from data_loader import nEXODataset
 from qkeras.quantizers import quantized_bits, quantized_relu
 from qkeras.qlayers import QDense, QActivation
 from tensorflow.keras.regularizers import l1
@@ -17,6 +17,7 @@ from tensorflow.keras.models import Sequential
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import fetch_openml
+from tensorflow.data import Dataset
 from tensorflow.keras.utils import to_categorical
 import numpy as np
 import pandas as pd
@@ -25,8 +26,9 @@ from qkeras.utils import _add_supported_quantized_objects
 # edit depending on where Vivado is installed:
 # os.environ['PATH'] = '/<Xilinx installation directory>/Vivado/<version>/bin:' + os.environ['PATH']
 # or source settings before running file
+def extract_data(data, labels):
+    return data, labels
 
-PERF_SAMPLE = True
 
 def print_dict(d, indent=0):
     align = 20
@@ -78,12 +80,15 @@ def main(args):
                               expand_nested=False)
 
     # to check on full dataset
-    _, (X_test, y_test) = cifar10.load_data()
-    # to check on partial dataset
-    if PERF_SAMPLE:
-        _idxs = np.load('perf_samples_idxs.npy')
-        X_test = X_test[_idxs]
-        y_test = y_test[_idxs]
+    csv_test = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_valid.csv' 
+    h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
+    test_dg = nEXODataset('test',h5file,csv_test)
+
+    test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    X_test, y_test= [], []
+    for images, labels in test_ds:
+        X_test.append(images.numpy())
+        y_test.append(labels.numpy())
     # use first 10 samples for building with FIFO Opt
     if bool(our_config['convert']['Build']) and bool(our_config['convert']['FIFO_opt']):
         X_test = X_test[:10]
@@ -92,20 +97,23 @@ def main(args):
     elif bool(our_config['convert']['Build']):
         X_test = X_test[:2]
         y_test = y_test[:2]
+    X_test = np.array(X_test)
+    y_test = np.array(y_test)
     num_samples = X_test.shape[0]
+    print(num_samples)
 
     X_test = np.ascontiguousarray(X_test, dtype=np.float32)
-    if not apply_patches:
-        X_test = X_test/256.
-    num_classes = 10
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes)
+    #if not apply_patches:
+    #    X_test = X_test/256.
 
     if apply_patches:
         y_keras = model_rescale.predict(X_test)
     else:
         y_keras = model.predict(X_test)
-
-    print("Keras Accuracy:  {}".format(accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_keras, axis=1))))
+   
+    y_keras = y_keras.flatten()
+    print(y_test, y_keras)
+    print("Keras Accuracy:  {}".format(accuracy_score(y_test, y_keras.round())))
 
     np.save(os.path.join(save_dir, 'y_keras.npy'), y_keras)
     np.save(os.path.join(save_dir, 'y_test.npy'), y_test)

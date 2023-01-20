@@ -54,8 +54,8 @@ quantization:
   use_stochastic_rounding: 0
 
 convert:
-  ApplyPatches: 1
-  RemoveSoftmax: 1
+  ApplyPatches: 0
+  RemoveSoftmax: 0
   OutputDir: my-hls-test-quantized-tiny2-pynq-z2-rf16384-6p67ns_FIFO_OPT
   XilinxPart: xc7z020clg400-1
   Backend: VivadoAccelerator

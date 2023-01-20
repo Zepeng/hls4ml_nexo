@@ -14,13 +14,13 @@ import csv
 # from keras_flops import get_flops # (different flop calculation)
 import kerop
 from tensorflow.data import Dataset
-from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
-random_crop_model = tf.keras.models.Sequential()
-random_crop_model.add(RandomCrop(32, 32, input_shape=(32, 32, 3,)))
+#from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
+#random_crop_model = tf.keras.models.Sequential()
+#random_crop_model.add(RandomCrop(32, 32, input_shape=(32, 32, 3,)))
 
 
-def random_crop(x):
-    return random_crop_model.predict(x)
+#def random_crop(x):
+#    return aandom_crop_model.predict(x)
 
 
 def get_lr_schedule_func(initial_lr, lr_decay):
@@ -88,8 +88,6 @@ def main(args):
     test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
     train_ds = train_ds.batch(batch_size)
     test_ds = test_ds.batch(batch_size)
-    #model = ResNet18(2)
-    #model.build(input_shape = (None,200,255,3))
     kwargs = {'input_shape': input_shape,
               'num_classes': num_classes,
               'num_filters': num_filters,
@@ -160,7 +158,6 @@ def main(args):
 
     # train
     history = model.fit(train_ds, 
-            #datagen.flow(X_train, y_train, batch_size=batch_size),
                         #steps_per_epoch=X_train.shape[0] // batch_size,
                         epochs=num_epochs,
                         validation_data=test_ds, 
@@ -168,10 +165,11 @@ def main(args):
                         callbacks=callbacks,
                         verbose=verbose)
 
-    """
     # restore "best" model
     model.load_weights(model_file_path)
 
+    iterator = iter(test_ds)
+    X_test, y_test = next(iterator)
     # get predictions
     y_pred = model.predict(X_test)
 
@@ -182,7 +180,6 @@ def main(args):
 
     print('Model test accuracy = %.3f' % evaluation[1])
     print('Model test weighted average AUC = %.3f' % auc)
-    """
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
