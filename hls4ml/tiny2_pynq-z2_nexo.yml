@@ -3,7 +3,7 @@ data:
   name: nexo
   h5name: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5
   train_csv: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv
-  test_csv: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_test.csv 
+  test_csv: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_valid.csv 
   input_shape:
   - 200
   - 255

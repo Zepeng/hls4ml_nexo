@@ -34,6 +34,9 @@ def main(args):
     # parameters
     config = yaml_load(args.config)
     data_name = config['data']['name']
+    h5file = config['data']['h5name']
+    csv_train = config['data']['train_csv']
+    csv_test = config['data']['test_csv']
     input_shape = [int(i) for i in config['data']['input_shape']]
     num_classes = int(config['data']['num_classes'])
     num_filters = config['model']['filters']
@@ -70,9 +73,9 @@ def main(args):
     lr_decay = config['fit']['compile']['lr_decay']
 
     # load dataset
-    csv_train = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv' 
-    csv_test = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_valid.csv' 
-    h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
+    #csv_train = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv' 
+    #csv_test = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_valid.csv' 
+    #h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
     train_dg = nEXODataset('train',h5file,csv_train)
     test_dg = nEXODataset('test',h5file,csv_test)
     

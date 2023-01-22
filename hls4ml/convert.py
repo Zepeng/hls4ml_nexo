@@ -84,7 +84,7 @@ def main(args):
     h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
     test_dg = nEXODataset('test',h5file,csv_test)
 
-    test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([])))
     X_test, y_test= [], []
     for images, labels in test_ds:
         X_test.append(images.numpy())
