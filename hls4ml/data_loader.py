@@ -29,9 +29,6 @@ class nEXODataset:
         dset_entry = self.h5file[self.groupname[idx]][self.datainfo[idx]]
         eventtype = 1 if dset_entry.attrs[u'tag']=='e-' else 0
         x = np.array(dset_entry)[:,:,:]
-        #x = np.transpose(img, (2,0,1)) 
-        arr_padded = np.pad(x, ((0, 0), (0, 0), (0, 1)), 'constant')
-        x = arr_padded.reshape(200, 255, 3)
         y = eventtype #.astype(np.int64)
         return x, y
     
@@ -55,12 +52,6 @@ class nEXODataset:
         x = self.normalize(x)
         return x
 
-#array = np.random.random((1000,32,32,3))
-#labels = np.random.randint(0,10,1000)
-#print(array.shape, labels.shape)
-#mean = np.mean(array, axis = 0)
-#std = np.std(array, axis = 0)
-
 import numpy as np
 import os, requests, copy, random
 #import matplotlib.pyplot as plt
@@ -70,7 +61,7 @@ def test():
     h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
     dg = nEXODataset('train',h5file,csv_file)
 
-    ds = Dataset.from_generator(dg, output_types = (tf.float32, tf.int64), output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    ds = Dataset.from_generator(dg, output_types = (tf.float32, tf.int64), output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([])))
     ds = ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16).batch(64)
 
     iterator = iter(ds)

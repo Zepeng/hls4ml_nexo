@@ -1,13 +1,16 @@
-save_dir: resnet_v1_eembc_quantized_nexo_quantized_tiny2
+save_dir: resnet_v1_eembc_nexo_tiny2
 data:
   name: nexo
+  h5name: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5
+  train_csv: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv
+  test_csv: /expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_test.csv 
   input_shape:
   - 200
   - 255
-  - 3
+  - 2
   num_classes: 2 
 model:
-  name: resnet_v1_eembc_quantized
+  name: resnet_v1_eembc
   filters:
   - 32
   - 4

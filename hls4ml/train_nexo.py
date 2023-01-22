@@ -14,14 +14,6 @@ import csv
 # from keras_flops import get_flops # (different flop calculation)
 import kerop
 from tensorflow.data import Dataset
-#from tensorflow.keras.layers.experimental.preprocessing import RandomCrop
-#random_crop_model = tf.keras.models.Sequential()
-#random_crop_model.add(RandomCrop(32, 32, input_shape=(32, 32, 3,)))
-
-
-#def random_crop(x):
-#    return aandom_crop_model.predict(x)
-
 
 def get_lr_schedule_func(initial_lr, lr_decay):
 
@@ -84,8 +76,8 @@ def main(args):
     train_dg = nEXODataset('train',h5file,csv_train)
     test_dg = nEXODataset('test',h5file,csv_test)
     
-    train_ds = Dataset.from_generator(train_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
-    test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,3]),tf.TensorShape([])))
+    train_ds = Dataset.from_generator(train_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape(input_shape),tf.TensorShape([])))
+    test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape(input_shape),tf.TensorShape([])))
     train_ds = train_ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16)
     test_ds = test_ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16)
     train_ds = train_ds.batch(batch_size)
