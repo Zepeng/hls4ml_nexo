@@ -86,7 +86,7 @@ def main(args):
 
     test_ds = Dataset.from_generator(test_dg, output_types = (tf.float32, tf.int64) , output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([])))
     X_test, y_test= [], []
-    for images, labels in test_ds:
+    for images, labels in test_ds.take(1000):
         X_test.append(images.numpy())
         y_test.append(labels.numpy())
     # use first 10 samples for building with FIFO Opt
@@ -100,7 +100,6 @@ def main(args):
     X_test = np.array(X_test)
     y_test = np.array(y_test)
     num_samples = X_test.shape[0]
-    print(num_samples)
 
     X_test = np.ascontiguousarray(X_test, dtype=np.float32)
     #if not apply_patches:
@@ -243,8 +242,8 @@ def main(args):
         hls_model.compile()
         y_hls = hls_model.predict(X_test)
 
-    print("Keras Accuracy:  {}".format(accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_keras, axis=1))))
-    print("hls4ml Accuracy: {}".format(accuracy_score(np.argmax(y_test, axis=1), np.argmax(y_hls, axis=1))))
+    print("Keras Accuracy:  {}".format(accuracy_score(y_test, y_keras.round())))
+    print("hls4ml Accuracy:  {}".format(accuracy_score(y_test, y_hls.round())))
 
     # Bitfile time
     if bool(our_config['convert']['Build']):
