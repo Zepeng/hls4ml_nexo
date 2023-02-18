@@ -142,7 +142,7 @@ model_pruned = tf.keras.models.clone_model( model ) #, clone_function=pruneFunct
 # In[8]:
 
 
-train = True # True if you want to retrain, false if you want to load a previsously trained model
+train = False # True if you want to retrain, false if you want to load a previsously trained model
 
 n_epochs = 5
 
@@ -190,6 +190,14 @@ else:
 from qkeras import QActivation
 from qkeras import QDense, QConv2DBatchnorm
 
+
+kwargs = {'input_shape': input_shape,
+          'num_classes': n_classes,
+          'logit_total_bits': 10,
+          'logit_int_bits': 4,
+          'activation_total_bits': 16,
+          'activation_int_bits':12
+        }
 model_name = 'resnet_v1_eembc_quantized'
 qmodel = getattr(resnet_v1_eembc, model_name)(**kwargs)
 qmodel.summary()
@@ -220,7 +228,7 @@ train = True
 
 n_epochs = 5
 if train:
-    LOSS        = tf.keras.losses.CategoricalCrossentropy()
+    LOSS        = tf.keras.losses.BinaryCrossentropy()
     OPTIMIZER   = tf.keras.optimizers.Adam(learning_rate=1E-2, beta_1=0.9, beta_2=0.999, epsilon=1e-07, amsgrad=True) 
     qmodel_pruned.compile(loss=LOSS, optimizer=OPTIMIZER, metrics=["accuracy"])
 
@@ -678,7 +686,7 @@ x_out = Activation('softmax',name='output_softmax')(x)
 
 baseline_model = Model(inputs=[x_in], outputs=[x_out], name='keras_baseline')
 
-LOSS        = tf.keras.losses.CategoricalCrossentropy()
+LOSS        = tf.keras.losses.BinaryCrossentropy()
 OPTIMIZER   = tf.keras.optimizers.Adam(learning_rate=3E-3, beta_1=0.9, beta_2=0.999, epsilon=1e-07, amsgrad=True)
 
 baseline_model.compile(loss=LOSS, optimizer=OPTIMIZER, metrics=["accuracy"])
@@ -862,7 +870,7 @@ for i in range(1, len(layers)):
     x = layers[i](x)
 
 new_model = Model(inputs=[layers[0].input], outputs=[x])   
-LOSS        = tf.keras.losses.CategoricalCrossentropy()
+LOSS        = tf.keras.losses.BinaryCrossentropy()
 OPTIMIZER   = tf.keras.optimizers.Adam(learning_rate=3E-3, beta_1=0.9, beta_2=0.999, epsilon=1e-07, amsgrad=True)
 
 new_model.compile(loss=LOSS, optimizer=OPTIMIZER, metrics=["accuracy"])
