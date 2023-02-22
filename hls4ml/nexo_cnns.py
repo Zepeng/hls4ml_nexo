@@ -684,8 +684,6 @@ for i,n in enumerate(neurons_per_dense_layer):
 x = Dense(int(n_classes),name='output_dense')(x)
 x_out = Activation('softmax',name='output_softmax')(x)
 
-# In[33]:
-
 
 from qkeras import print_qstats
 # for automatic quantization
