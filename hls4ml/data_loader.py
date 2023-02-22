@@ -29,8 +29,15 @@ class nEXODataset:
         dset_entry = self.h5file[self.groupname[idx]][self.datainfo[idx]]
         eventtype = 1 if dset_entry.attrs[u'tag']=='e-' else 0
         x = np.array(dset_entry)[:,:,:]
+        indices = np.where(x == 0)
+        x = x - np.min(x)
+        if np.max(x) > 0:
+            x = x/np.max(x)
+        #x = x*256. #/np.max(x)
+        #x = x.astype(np.uint8)
         y = eventtype #.astype(np.int64)
-        return x, y
+        x[indices] = 0
+        return x, y #tf.one_hot(tf.squeeze(y), 2)
     
     def __call__(self):
         for i in range(self.__len__()):
@@ -54,28 +61,30 @@ class nEXODataset:
 
 import numpy as np
 import os, requests, copy, random
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from tensorflow.data import Dataset
 def test():
-    csv_file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo_train.csv' 
-    h5file = '/expanse/lustre/scratch/zli10/temp_project/hls4ml/nexo.h5'
+    csv_file = '/scratch/zel032/DatasetFromMin/nexo.csv' 
+    h5file = '/scratch/zel032/DatasetFromMin/nexo.h5' 
     dg = nEXODataset('train',h5file,csv_file)
 
-    ds = Dataset.from_generator(dg, output_types = (tf.float32, tf.int64), output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([])))
-    ds = ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16).batch(64)
+    ds = Dataset.from_generator(dg, output_types = (tf.uint8, tf.int64), output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([])))
+    ds = ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16).batch(32)
 
     iterator = iter(ds)
     x, y = next(iterator)
     print(x.shape)
-    ds = ds.batch(32)
     for b in ds:
         imgs, labs = b
         print(imgs.shape, labs.shape)
-        #fig, axs = plt.subplots(8,4)
-        #for i in range(8):
-        #    for j in range(4):
-        #        axs[i,j].imshow(imgs[i*4+j],cmap = 'gray')
-        #plt.show()
+        fig, axs = plt.subplots(2,2)
+        for i in range(2):
+            for j in range(2):
+                print(imgs[i*4+j])
+                img = np.zeros((200, 255, 3))
+                img[:, :, :2] = imgs[i*4+j]
+                axs[i,j].imshow(img,cmap = 'gray')
+        plt.savefig('dataloader.pdf')
         break
 if __name__ == '__main__':
     test()
