@@ -19,7 +19,6 @@ class nEXODataset:
         self.groupname = np.asarray(csv_info.iloc[:,0])
         self.datainfo = np.asarray(csv_info.iloc[:,1])
         self.h5file = h5py.File(h5_path, 'r')
-        #self.normalize = transforms.Normalize(mean, std)
         self.transforms = transformations
 
     def __len__(self):
@@ -33,8 +32,6 @@ class nEXODataset:
         x = x - np.min(x)
         if np.max(x) > 0:
             x = x/np.max(x)
-        #x = x*256. #/np.max(x)
-        #x = x.astype(np.uint8)
         y = eventtype #.astype(np.int64)
         x[indices] = 0
         return x, y #tf.one_hot(tf.squeeze(y), 2)
@@ -42,33 +39,48 @@ class nEXODataset:
     def __call__(self):
         for i in range(self.__len__()):
             yield self.__getitem__(i)
-            
-            #if i == self.__len__()-1:
-            #    self.on_epoch_end()
     
-            
-    #shuffles the dataset at the end of each epoch
-    #def on_epoch_end(self):
-    #    reidx = random.sample(population = list(range(self.__len__())),k = self.__len__())
-    #    self.imgarr = self.imgarr[reidx]
-    #    self.labels = self.labels[reidx]
-    #applies randomly selected augmentations to each clip (same for each frame in the clip)
-    def augment(self, x):
-        if self.transforms is not None:
-            x = self.transforms(x)
-        x = self.normalize(x)
-        return x
+class VertexDataset:
+    def __init__(self, phase, h5_path, csv_path, n_channels=2):
+        """ This class yields events from pregenerated MC file.
+        Parameters:
+            csv_path : str; csv file containing file/event information to read
+            h5path : str; name of H5 data file
+        """
+        csv_info = pd.read_csv(csv_path, skiprows=1, header=None)
+        self.groupname = np.asarray(csv_info.iloc[:,0])
+        self.datainfo = np.asarray(csv_info.iloc[:,1])
+        self.h5file = h5py.File(h5_path, 'r')
+        self.n_channels = n_channels
+
+    def __len__(self):
+        return self.datainfo.shape[0]
+
+    def __getitem__(self, idx):
+        dset_entry = self.h5file[self.groupname[idx]][self.datainfo[idx]]
+        xy = np.array(dset_entry.attrs[u'vertex'][:2], dtype=np.float32)
+        x = np.array(dset_entry)[:,:,:]
+        indices = np.where(x == 0)
+        x = x - np.min(x)
+        if np.max(x) > 0:
+            x = x/np.max(x)
+        x[indices] = 0
+        return x, xy #tf.one_hot(tf.squeeze(y), 2)
+
+    def __call__(self):
+        for i in range(self.__len__()):
+            yield self.__getitem__(i)
 
 import numpy as np
 import os, requests, copy, random
 import matplotlib.pyplot as plt
 from tensorflow.data import Dataset
 def test():
-    csv_file = '/scratch/zel032/DatasetFromMin/nexo.csv' 
-    h5file = '/scratch/zel032/DatasetFromMin/nexo.h5' 
-    dg = nEXODataset('train',h5file,csv_file)
-
-    ds = Dataset.from_generator(dg, output_types = (tf.uint8, tf.int64), output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([])))
+    csv_file = '/scratch/zel032/vertex/nexo_train.csv' 
+    h5file = '/scratch/zel032/vertex/nexo.h5' 
+    dg = VertexDataset('train',h5file,csv_file)
+    
+    ds = Dataset.from_generator(dg, output_types = (tf.float16, tf.float16), output_shapes = (tf.TensorShape([200,255,2]),tf.TensorShape([2])))
     ds = ds.interleave(lambda x, y: tf.data.Dataset.from_tensors((x,y)), cycle_length=4, block_length=16).batch(32)
 
     iterator = iter(ds)
