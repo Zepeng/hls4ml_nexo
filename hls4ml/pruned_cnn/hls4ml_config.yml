@@ -1,0 +1,246 @@
+Backend: Vivado
+Board: null
+ClockPeriod: 5
+HLSConfig:
+  LayerName:
+    activation_14:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    activation_15:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    activation_16:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    activation_17:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    activation_18:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    activation_19:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    activation_20:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    add_78:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    add_79:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    add_80:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_208:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_209:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_210:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_211:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_212:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_213:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    batch_normalization_214:
+      Precision:
+        bias: ap_fixed<16,6>
+        scale: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_48:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_48_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_49:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_49_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_50:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_50_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_51:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_51_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_52:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_52_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_53:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_53_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_54:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_54_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_55:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_55_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    conv2d_56:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    conv2d_56_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    dense_11:
+      Precision:
+        bias: ap_fixed<16,6>
+        result: ap_fixed<16,6>
+        weight: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+    dense_11_linear:
+      Precision: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+      table_size: 1024
+      table_t: ap_fixed<18,8>
+    input_14:
+      Precision:
+        result: ap_fixed<16,6>
+      ReuseFactor: 1
+      Strategy: Latency
+  Model:
+    Precision: ap_fixed<16,6>
+    ReuseFactor: 1
+    Strategy: Latency
+IOType: io_stream
+KerasModel: !keras_model 'pruned_cnn//keras_model.h5'
+OutputDir: pruned_cnn/
+ProjectName: myproject
+Stamp: 95492cA1
+XilinxPart: xcu250-figd2104-2L-e
